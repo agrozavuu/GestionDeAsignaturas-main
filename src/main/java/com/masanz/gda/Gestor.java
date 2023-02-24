@@ -44,7 +44,8 @@ public class Gestor {
      * @param grupo Instancia de un grupo
      */
     public void anadirGrupo(Grupo grupo) {
-        // TODO: anadirGrupo (12)
+        // TODO HECHO: anadirGrupo (12)
+        registro.put(grupo, new HashMap<>());
     }
 
     /**
@@ -53,8 +54,8 @@ public class Gestor {
      * @return TreeSet de grupos del registro
      */
     public TreeSet<Grupo> getGrupos() {
-        // TODO: getGrupos (13)
-        return null;
+        // TODO HECHO: getGrupos (13)
+        return new TreeSet<>(registro.keySet());
     }
 
     /**
@@ -62,7 +63,8 @@ public class Gestor {
      * @param grupo Instancia de Grupo.
      */
     public void borrarGrupo(Grupo grupo) {
-        // TODO: borrarGrupo (14)
+        // TODO HECHO: borrarGrupo (14)
+        registro.remove(grupo);
     }
 
     //endregion
@@ -76,7 +78,10 @@ public class Gestor {
      * @return Si existe la asignatura asociada al grupo indicado en el registro.
      */
     public boolean existeAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
-        // TODO: existeAsignaturaGrupo (21)
+        // TODO HECHO: existeAsignaturaGrupo (21)
+        if (existeGrupo(grupo)) {
+            return registro.get(grupo).containsKey(asignatura);
+        }
         return false;
     }
 
@@ -87,7 +92,11 @@ public class Gestor {
      * @param grupo
      */
     public void anadirAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
-        // TODO: anadirAsignaturaGrupo (22)
+        // TODO HECHO: anadirAsignaturaGrupo (22)
+        if (!existeGrupo(grupo)) {
+            anadirGrupo(grupo);
+        }
+        registro.get(grupo).put(asignatura, new ArrayList<>());
     }
 
     /**
@@ -96,7 +105,10 @@ public class Gestor {
      * @return
      */
     public HashSet<Asignatura> getAsignaturas(Grupo grupo) {
-        // TODO: getAsignaturas grupo (23)
+        // TODO HECHO: getAsignaturas grupo (23)
+        if (existeGrupo(grupo)) {
+            return new HashSet<>(registro.get(grupo).keySet());
+        }
         return null;
     }
 
@@ -105,8 +117,12 @@ public class Gestor {
      * @return
      */
     public HashSet<Asignatura> getAsignaturas() {
-        // TODO: getAsignaturas todas (24)
-        return null;
+        // TODO HECHO: getAsignaturas todas (24)
+        HashSet<Asignatura> asignaturas = new HashSet<>();
+        for (Grupo grupo : registro.keySet()) {
+            asignaturas.addAll(getAsignaturas(grupo));
+        }
+        return asignaturas;
     }
 
     /**
@@ -115,7 +131,10 @@ public class Gestor {
      * @param grupo
      */
     public void borrarAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
-        // TODO: borrarAsignaturaGrupo (25)
+        // TODO HECHO: borrarAsignaturaGrupo (25)
+        if (existeAsignaturaGrupo(asignatura, grupo)) {
+            registro.get(grupo).remove(asignatura);
+        }
     }
 
     //endregion
@@ -129,7 +148,10 @@ public class Gestor {
      * @return
      */
     public ArrayList<Estudiante> getListaEstudiantesAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
-        // TODO: getListaEstudiantesAsignaturaGrupo (31)
+        // TODO HECHO: getListaEstudiantesAsignaturaGrupo (31)
+        if (existeAsignaturaGrupo(asignatura, grupo)) {
+            return registro.get(grupo).get(asignatura);
+        }
         return null;
     }
 
@@ -141,7 +163,10 @@ public class Gestor {
      * @return
      */
     public boolean existeEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: existeEstudianteAsignaturaGrupo (32)
+        // TODO HECHO: existeEstudianteAsignaturaGrupo (32)
+        if (existeAsignaturaGrupo(asignatura, grupo)) {
+            return registro.get(grupo).get(asignatura).contains(estudiante);
+        }
         return false;
     }
 
@@ -154,7 +179,7 @@ public class Gestor {
      * @return
      */
     public Estudiante getEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: getEstudianteAsignaturaGrupo (33)
+        // TODO HECHO: getEstudianteAsignaturaGrupo (33)
         return null;
     }
 
@@ -170,7 +195,13 @@ public class Gestor {
      * @param grupo
      */
     public void anadirEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: anadirEstudianteAsignaturaGrupo (34)
+        // TODO HECHO: anadirEstudianteAsignaturaGrupo (34)
+        if (!existeGrupo(grupo)) {
+            anadirGrupo(grupo);
+        }
+        if (!existeAsignaturaGrupo(asignatura, grupo)) {
+            anadirAsignaturaGrupo(asignatura, grupo);
+        }
     }
 
     /**
@@ -180,7 +211,7 @@ public class Gestor {
      * @param grupo
      */
     public void borrarEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: borrarEstudianteAsignaturaGrupo (35)
+        // TODO HECHO: borrarEstudianteAsignaturaGrupo (35)
     }
 
     //endregion
