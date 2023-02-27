@@ -184,7 +184,14 @@ public class Gestor {
      * @return
      */
     public Estudiante getEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: getEstudianteAsignaturaGrupo (33)
+        // TODO HECHO: getEstudianteAsignaturaGrupo (33)
+        if (existeEstudianteAsignaturaGrupo(estudiante, asignatura, grupo)) {
+            for (Estudiante est : registro.get(grupo).get(asignatura)) {
+                if (est.equals(estudiante)) {
+                    return est;
+                }
+            }
+        }
         return null;
     }
 
@@ -207,6 +214,11 @@ public class Gestor {
         if (!existeAsignaturaGrupo(asignatura, grupo)) {
             anadirAsignaturaGrupo(asignatura, grupo);
         }
+        if (existeEstudianteAsignaturaGrupo(estudiante, asignatura, grupo)) {
+            getEstudianteAsignaturaGrupo(estudiante, asignatura, grupo).setNota(estudiante.getNota());
+        } else {
+            registro.get(grupo).get(asignatura).add(estudiante);
+        }
     }
 
     /**
@@ -216,7 +228,10 @@ public class Gestor {
      * @param grupo
      */
     public void borrarEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: borrarEstudianteAsignaturaGrupo (35)
+        // TODO HECHO: borrarEstudianteAsignaturaGrupo (35)
+        if (existeEstudianteAsignaturaGrupo(estudiante, asignatura, grupo)) {
+            registro.get(grupo).get(asignatura).remove(estudiante);
+        }
     }
 
     //endregion
@@ -230,7 +245,14 @@ public class Gestor {
      * @return
      */
     public ArrayList<Estudiante> getEstudiantes(Grupo grupo) {
-        // TODO: getEstudiantes grupo (41)
+        // TODO HECHO: getEstudiantes grupo (41)
+        if (existeGrupo(grupo)) {
+            ArrayList<Estudiante> estudiantes = new ArrayList<>();
+            for (Asignatura asignatura : registro.get(grupo).keySet()) {
+                estudiantes.addAll(registro.get(grupo).get(asignatura));
+            }
+            return estudiantes;
+        }
         return null;
     }
 
@@ -243,7 +265,12 @@ public class Gestor {
      * @return
      */
     public ArrayList<Estudiante> getEstudiantes(Asignatura asignatura) {
-        // TODO: getEstudiantes asignatura (42)
+        // TODO HECHO: getEstudiantes asignatura (42)
+        for (Grupo grupo : registro.keySet()) {
+            if (existeAsignaturaGrupo(asignatura, grupo)) {
+                return registro.get(grupo).get(asignatura);
+            }
+        }
         return null;
     }
 
@@ -256,6 +283,16 @@ public class Gestor {
      */
     public TreeMap<Estudiante,Grupo> getEstudiantesConNotaMayorIgualQue(Asignatura asignatura, double nota) {
         // TODO: getEstudiantesConNotaMayorIgualQue (43)
+        TreeMap<Estudiante, Grupo> estudiantes = new TreeMap<>();
+        for (Grupo grupo : registro.keySet()) {
+            if (existeAsignaturaGrupo(asignatura, grupo)) {
+                for (Estudiante estudiante : registro.get(grupo).get(asignatura)) {
+                    if (estudiante.getNota() >= nota) {
+                        estudiantes.put(estudiante, grupo);
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -284,6 +321,7 @@ public class Gestor {
      */
     public TreeMap<Integer,Integer> getDistribucionNotasAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
         // TODO: getDistribucionNotasAsignaturaGrupo (51)
+
         return null;
     }
 
@@ -329,6 +367,15 @@ public class Gestor {
      */
     public Grupo grupoDelEstudiante(String nombre, String apellidos) {
         // TODO: grupoDelEstudiante (61)
+        for (Grupo grupo : registro.keySet()) {
+            for (Asignatura asignatura : registro.get(grupo).keySet()) {
+                for (Estudiante estudiante : registro.get(grupo).get(asignatura)) {
+                    if (estudiante.getNombre().equals(nombre) && estudiante.getApellidos().equals(apellidos)) {
+                        return grupo;
+                    }
+                }
+            }
+        }
         return null;
     }
 
