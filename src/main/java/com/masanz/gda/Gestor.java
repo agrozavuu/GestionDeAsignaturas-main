@@ -245,7 +245,7 @@ public class Gestor {
      * @return
      */
     public ArrayList<Estudiante> getEstudiantes(Grupo grupo) {
-        // TODO HECHO: getEstudiantes grupo (41)
+        // TODO MAL HECHO: getEstudiantes grupo (41)
         if (existeGrupo(grupo)) {
             ArrayList<Estudiante> estudiantes = new ArrayList<>();
             for (Asignatura asignatura : registro.get(grupo).keySet()) {
@@ -262,16 +262,17 @@ public class Gestor {
      * no puede estar en la misma asignatura en distintos grupos con distinta nota.
      * La nota de las/los estudiantes será la nota de esa asignatura.
      * @param asignatura
-     * @return
+     * @return lista de estudiantes
      */
     public ArrayList<Estudiante> getEstudiantes(Asignatura asignatura) {
-        // TODO HECHO: getEstudiantes asignatura (42)
+        // TODO MAL HECHO: getEstudiantes asignatura (42)
+        ArrayList<Estudiante> estudiantes = new ArrayList<>();
         for (Grupo grupo : registro.keySet()) {
             if (existeAsignaturaGrupo(asignatura, grupo)) {
-                return registro.get(grupo).get(asignatura);
+                estudiantes.addAll(registro.get(grupo).get(asignatura));
             }
         }
-        return null;
+        return estudiantes;
     }
 
     /**
@@ -282,7 +283,7 @@ public class Gestor {
      * @return
      */
     public TreeMap<Estudiante,Grupo> getEstudiantesConNotaMayorIgualQue(Asignatura asignatura, double nota) {
-        // TODO: getEstudiantesConNotaMayorIgualQue (43)
+        // TODO HECHO: getEstudiantesConNotaMayorIgualQue (43)
         TreeMap<Estudiante, Grupo> estudiantes = new TreeMap<>();
         for (Grupo grupo : registro.keySet()) {
             if (existeAsignaturaGrupo(asignatura, grupo)) {
@@ -293,7 +294,7 @@ public class Gestor {
                 }
             }
         }
-        return null;
+        return estudiantes;
     }
 
     //endregion
@@ -320,8 +321,17 @@ public class Gestor {
      * @return
      */
     public TreeMap<Integer,Integer> getDistribucionNotasAsignaturaGrupo(Asignatura asignatura, Grupo grupo) {
-        // TODO: getDistribucionNotasAsignaturaGrupo (51)
-
+        // TODO HECHO: getDistribucionNotasAsignaturaGrupo (51)
+        if (existeAsignaturaGrupo(asignatura, grupo)) {
+            TreeMap<Integer, Integer> distribucion = new TreeMap<>();
+            for (int i = 0; i <= 10; i++) {
+                distribucion.put(i, 0);
+            }
+            for (Estudiante estudiante : registro.get(grupo).get(asignatura)) {
+                distribucion.put((int) estudiante.getNota(), distribucion.get((int) estudiante.getNota()) + 1);
+            }
+            return distribucion;
+        }
         return null;
     }
 
@@ -340,12 +350,26 @@ public class Gestor {
      * @return
      */
     public TreeMap<Integer,Integer> getDistribucionNotasAsignatura(Asignatura asignatura) {
-        // TODO: getDistribucionNotasAsignatura (52)
-        return null;
+        // TODO HECHO: getDistribucionNotasAsignatura (52)
+        TreeMap<Integer, Integer> distribucion = new TreeMap<>();
+        for (int i = 0; i <= 10; i++) {
+            distribucion.put(i, 0);
+        }
+        for (Grupo grupo : registro.keySet()) {
+            if (existeAsignaturaGrupo(asignatura, grupo)) {
+                distribucion = acumulaDistribucionesDeNotas(distribucion, getDistribucionNotasAsignaturaGrupo(asignatura, grupo));
+            }
+        }
+        return distribucion;
     }
 
     private TreeMap<Integer,Integer> acumulaDistribucionesDeNotas(TreeMap<Integer,Integer> map1, TreeMap<Integer,Integer> map2) {
-        return null;
+        // TODO HECHO: acumulaDistribucionesDeNotas
+        TreeMap <Integer, Integer> distribucion = new TreeMap<>();
+        for (int i = 0; i <= 10; i++) {
+            distribucion.put(i, map1.get(i) + map2.get(i));
+        }
+        return distribucion;
     }
 
     //endregion
@@ -366,7 +390,7 @@ public class Gestor {
      * @return
      */
     public Grupo grupoDelEstudiante(String nombre, String apellidos) {
-        // TODO: grupoDelEstudiante (61)
+        // TODO HECHO: grupoDelEstudiante (61)
         for (Grupo grupo : registro.keySet()) {
             for (Asignatura asignatura : registro.get(grupo).keySet()) {
                 for (Estudiante estudiante : registro.get(grupo).get(asignatura)) {
@@ -394,11 +418,24 @@ public class Gestor {
      *
      * @param nombre
      * @param apellidos
-     * @return
+     * @return Devuelve un mapa de asignaturas y notas obtenidas de un/a estudiante o null si no tiene.
      */
     public HashMap<Asignatura, Double> notasEstudiante(String nombre, String apellidos) {
-        // TODO: notasEstudiante (62)
-        return null;
+        // TODO HECHO: notasEstudiante (62)
+        HashMap<Asignatura, Double> notas = new HashMap<>();
+        for (Grupo grupo : registro.keySet()) {
+            for (Asignatura asignatura : registro.get(grupo).keySet()) {
+                for (Estudiante estudiante : registro.get(grupo).get(asignatura)) {
+                    if (estudiante.getNombre().equals(nombre) && estudiante.getApellidos().equals(apellidos)) {
+                        notas.put(asignatura, estudiante.getNota());
+                    }
+                }
+            }
+        }
+        if (notas.size() == 0) {
+            return null;
+        }
+        return notas;
     }
 
     //endregion
