@@ -207,7 +207,7 @@ public class Gestor {
      * @param grupo
      */
     public void anadirEstudianteAsignaturaGrupo(Estudiante estudiante, Asignatura asignatura, Grupo grupo) {
-        // TODO: anadirEstudianteAsignaturaGrupo (34)
+        // TODO HECHO: anadirEstudianteAsignaturaGrupo (34)
         if (!existeGrupo(grupo)) {
             anadirGrupo(grupo);
         }
@@ -246,6 +246,9 @@ public class Gestor {
      */
     public ArrayList<Estudiante> getEstudiantes(Grupo grupo) {
         // TODO: getEstudiantes grupo (41)
+        if (!existeGrupo(grupo)) {
+            return null;
+        }
         HashSet<Estudiante> estudiantesUnicos = new HashSet<>();
         for (Asignatura asignatura : registro.get(grupo).keySet()) {
             estudiantesUnicos.addAll(registro.get(grupo).get(asignatura));
@@ -263,13 +266,16 @@ public class Gestor {
      */
     public ArrayList<Estudiante> getEstudiantes(Asignatura asignatura) {
         // TODO: getEstudiantes asignatura (42)
-        ArrayList<Estudiante> estudiantes = new ArrayList<>();
+        HashSet<Estudiante> estudiantesUnicos = new HashSet<>();
         for (Grupo grupo : registro.keySet()) {
             if (existeAsignaturaGrupo(asignatura, grupo)) {
-                estudiantes.addAll(registro.get(grupo).get(asignatura));
+                estudiantesUnicos.addAll(registro.get(grupo).get(asignatura));
             }
         }
-        return estudiantes;
+        if (estudiantesUnicos.isEmpty()) {
+            return null;
+        }
+        return new ArrayList<Estudiante>(estudiantesUnicos);
     }
 
     /**
