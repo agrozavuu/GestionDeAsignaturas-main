@@ -242,18 +242,15 @@ public class Gestor {
      * Devuelve una lista de estudiantes no repetidos de un grupo.
      * No importa la nota del/a estudiante de qué asignatura sea (no se mostrará).
      * @param grupo
-     * @return
+     * @return Devuelve una lista de estudiantes unicos.
      */
     public ArrayList<Estudiante> getEstudiantes(Grupo grupo) {
-        // TODO MAL HECHO: getEstudiantes grupo (41)
-        if (existeGrupo(grupo)) {
-            ArrayList<Estudiante> estudiantes = new ArrayList<>();
-            for (Asignatura asignatura : registro.get(grupo).keySet()) {
-                estudiantes.addAll(registro.get(grupo).get(asignatura));
-            }
-            return estudiantes;
+        // TODO: getEstudiantes grupo (41)
+        HashSet<Estudiante> estudiantesUnicos = new HashSet<>();
+        for (Asignatura asignatura : registro.get(grupo).keySet()) {
+            estudiantesUnicos.addAll(registro.get(grupo).get(asignatura));
         }
-        return null;
+        return new ArrayList<Estudiante>(estudiantesUnicos);
     }
 
     /**
@@ -262,10 +259,10 @@ public class Gestor {
      * no puede estar en la misma asignatura en distintos grupos con distinta nota.
      * La nota de las/los estudiantes será la nota de esa asignatura.
      * @param asignatura
-     * @return lista de estudiantes
+     * @return
      */
     public ArrayList<Estudiante> getEstudiantes(Asignatura asignatura) {
-        // TODO MAL HECHO: getEstudiantes asignatura (42)
+        // TODO: getEstudiantes asignatura (42)
         ArrayList<Estudiante> estudiantes = new ArrayList<>();
         for (Grupo grupo : registro.keySet()) {
             if (existeAsignaturaGrupo(asignatura, grupo)) {
